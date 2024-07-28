@@ -16,9 +16,6 @@
                 "label": "Account Number",
                 "required": true
             }
-        ],
-        "vaues": [
-
         ]
     }
 }
