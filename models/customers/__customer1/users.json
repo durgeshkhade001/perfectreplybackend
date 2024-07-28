@@ -1,5 +1,5 @@
 {
-    "USER1": {
+    "__user1": {
         "name": "John Doe",
         "email": "john@example.com",
         "location": "San Francisco",
@@ -10,7 +10,7 @@
             "CUSTOMATTR2": "enterprise"
         }
     },
-    "USER2": {
+    "__user2": {
         "name": "Sam Doe",
         "email": "Sam@example.com",
         "location": "Maharashtra",

@@ -1,5 +1,5 @@
 {
-    "AGENT1" : {
+    "__agent1" : {
         "name" : "Dan Lok",
         "email" : "dan@demo.salesperfect.com",
         "location" : "Vancouver",
@@ -7,7 +7,7 @@
         "status": "online",
         "teams": ["teamid1", "teamid2"]
     },
-    "AGENT2" : {
+    "__agent2" : {
         "name" : "Sam Doe",
         "email" : "sam@demo.salesperfect.com",
         "location" : "Maharashtra",

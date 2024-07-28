@@ -3,7 +3,7 @@
         "tktcategory": "Customer Ticket",
         "tkttye": "TKTTYPE1",
         "stage": 1,
-        "userid": "USER1",
+        "userid": "__user1",
         "assignedto": {
             "agentid": "",
             "teamid": "TEAM2"
@@ -17,33 +17,33 @@
     },
     "thread" : [
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "AgentReply",
             "message": "Are you sure you want to refund the product?"
         },
         {
-            "userid": "USER1",
+            "userid": "__user1",
             "type": "UserReply",
             "message": "Yes, I am sure."
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "AgentReply",
             "message": "Yeah! no problem. I will process the refund. I've initiated the refund process. You will receive the refund in 3-5 business days."
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "AgentNote",
             "message": "Can anyone from @TEAM2(Finance Team) process the refund and close the ticket?"
         },
         {
-            "agentid": "AGENT2",
+            "agentid": "__agent2",
             "type": "AgentNote",
             "message": "Done! I've processed the refund."
         },
         {
             "type": "SystemEvent",
-            "message": "@AGENT2(Dan Lok) closed the ticket"
+            "message": "@__agent2(Dan Lok) closed the ticket"
         }
     ]
 }

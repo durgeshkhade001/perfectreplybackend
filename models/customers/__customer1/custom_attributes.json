@@ -1,20 +1,20 @@
 {
-    "CUSTOMATTR1" : {
+    "__customattr1" : {
         "name" : "Account Number",
         "type" : "text",
         "regex" : "^[0-9]{10}$"
     },
-    "CUSTOMATTR2" : {
+    "__customattr2" : {
         "name" : "Plan",
         "type" : "text",
         "regex" : "^(enterprise|basic)$"
     },
-    "CUSTOMATTR3" : {
+    "__customattr3" : {
         "name" : "Order Number",
         "type" : "text",
         "regex" : "^[0-9]{10}$"
     },
-    "CUSTOMATTR4" : {
+    "__customattr4" : {
         "name" : "Refund Reason",
         "type" : "text",
         "regex" : "[a-zA-Z0-9 ]{1,100}"

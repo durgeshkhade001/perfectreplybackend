@@ -1,5 +1,5 @@
 {
-    "TKTTYPE1" : {
+    "__tickettype1" : {
         "name" : "Product Refund",
         "icon" : "💵"
     }

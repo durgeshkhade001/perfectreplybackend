@@ -1,9 +1,9 @@
 {
-    "CUSTOMER1" : {
+    "__customer1" : {
         "name" : "John Doe",
         "email" : "john@mycustomer.com"
     },
-    "CUSTOMER2" : {
+    "__customer2" : {
         "name" : "Sam Doe",
         "email" : "sam@mycustomer.com"
     }
