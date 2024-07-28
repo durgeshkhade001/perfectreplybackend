@@ -1,20 +1,26 @@
 {
-    "_UserReply" : {
+    "_UserReply": {
         "userid": "USER1",
         "type": "reply",
         "message": "Hello, I have a question about my account."
     },
-    "_AgentReply" : {
+    "_AgentReply": {
         "agentid": "AGENT1",
         "type": "reply",
         "message": "Sure, I can help you with that. What is your account number?"
     },
-    "_CollectData" : {
+    "_CollectData": {
         "agentid": "AGENT1",
         "status": "pending",
-        "data": {
-            "customaatrid": "CUSTOMATTR1",
-            "value": ""
-        }
+        "data": [
+            {
+                "customaatrid": "CUSTOMATTR1",
+                "value": ""
+            },
+            {
+                "customaatrid": "CUSTOMATTR2",
+                "value": ""
+            }
+        ]
     }
 }
