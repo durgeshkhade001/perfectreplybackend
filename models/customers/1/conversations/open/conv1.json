@@ -12,16 +12,19 @@
         {
             "userid": "USER1",
             "type": "UserReply",
-            "message": "Hello, I have a question about my account. is my account Current or Savings?"
+            "message": "Hello, I have a question about my account. is my account Current or Savings?",
+            "created": "2019-01-01T12:00:00"
         },
         {
             "agentid": "AGENT1",
             "type": "AgentReply",
-            "message": "Sure, I can help you with that. What is your account number?"
+            "message": "Sure, I can help you with that. What is your account number?",
+            "created": "2019-01-01T12:01:00"
         },
         {
             "type": "SystemEvent",
-            "message": "Conversation assitgned to Sam Doe"
+            "message": "Conversation assitgned to Sam Doe",
+            "created": "2019-01-01T12:02:00"
         },
         {
             "agentid": "AGENT1",
@@ -36,27 +39,33 @@
                     "customaatrid": "CUSTOMATTR2",
                     "value": ""
                 }
-            ]
+            ],
+            "created": "2019-01-01T12:03:00",
+            "collected": "2019-01-01T12:05:00"
         },
         {
             "agentid": "AGENT1",
             "type": "AgentNote",
-            "message": "@AGENT2(Dan Lok), Can you please take over this conversation?"
+            "message": "@AGENT2(Dan Lok), Can you please take over this conversation?",
+            "created": "2019-01-01T12:06:00"
         },
         {
             "agentid": "AGENT2",
             "type": "AgentNote",
-            "message": "Sure, I will take over."
+            "message": "Sure, I will take over.",
+            "created": "2019-01-01T12:07:00"
         },
         {
             "agentid": "AGENT2",
             "type": "AgentReply",
-            "message": "Thanks for providing the information. Your account is a Savings account."
+            "message": "Thanks for providing the information. Your account is a Savings account.",
+            "created": "2019-01-01T12:08:00"
         },
         {
             "userid": "USER1",
             "type": "UserReply",
-            "message": "Thank you for the information."
+            "message": "Thank you for the information.",
+            "created": "2019-01-01T12:09:00"
         },
         {
             "agentid": "AGENT1",
@@ -65,7 +74,9 @@
             "data": {
                 "rating": 0,
                 "comment": ""
-            }
+            },
+            "created": "2019-01-01T12:10:00",
+            "collected": "2019-01-01T12:11:00"
         }
     ]
 }
