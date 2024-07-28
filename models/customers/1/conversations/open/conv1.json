@@ -12,7 +12,7 @@
         {
             "userid": "USER1",
             "type": "UserReply",
-            "message": "Hello, I have a question about my account."
+            "message": "Hello, I have a question about my account. is my account Current or Savings?"
         },
         {
             "agentid": "AGENT1",
@@ -37,6 +37,25 @@
                     "value": ""
                 }
             ]
+        },
+        {
+            "agentid": "AGENT1",
+            "type": "AgentReply",
+            "message": "Thanks for providing the information. Your account is a Savings account."
+        },
+        {
+            "userid": "USER1",
+            "type": "UserReply",
+            "message": "Thank you for the information."
+        },
+        {
+            "agentid": "AGENT1",
+            "type": "CollectRating",
+            "status": "pending",
+            "data": {
+                "rating": 0,
+                "comment": ""
+            }
         }
     ]
 }
