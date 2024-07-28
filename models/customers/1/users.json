@@ -1,5 +1,5 @@
 {
-    "userid1" :  {
+    "USER1" :  {
         "name": "John Doe",
         "email": "john@example.com",
         "location": "San Francisco",
@@ -11,7 +11,7 @@
         }
     },
 
-    "userid2" :  {
+    "USER2" :  {
         "name": "Sam Doe",
         "email": "Sam@example.com",
         "location": "Maharashtra",
