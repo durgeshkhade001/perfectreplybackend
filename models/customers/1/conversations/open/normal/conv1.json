@@ -1,6 +1,5 @@
 {
     "data": {
-        "status": "open",
         "customerid": "1",
         "assignedto": "AGENT1",
         "created": "2019-01-01T12:00:00"
