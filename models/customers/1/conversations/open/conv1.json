@@ -8,7 +8,7 @@
         "created": "2019-01-01T12:00:00",
         "isPriority": false
     },
-    "converstion": [
+    "thread": [
         {
             "userid": "USER1",
             "type": "UserReply",
