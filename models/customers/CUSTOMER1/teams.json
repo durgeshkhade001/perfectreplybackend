@@ -1,0 +1,16 @@
+{
+    "TEAM1" : {
+        "name" : "TEAM1",
+        "description" : "TEAM1 description",
+        "members" : [
+            "AGENT1", "AGENT2" 
+        ]
+    },
+    "TEAM2" : {
+        "name" : "TEAM1",
+        "description" : "TEAM1 description",
+        "members" : [
+            "AGENT2", "AGENT3" 
+        ]
+    }
+}
