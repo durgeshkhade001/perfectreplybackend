@@ -1,0 +1,7 @@
+{
+    "CUSTOMATTR1" : {
+        "name" : "Account Number",
+        "type" : "text",
+        "regex" : "^[0-9]{10}$"
+    }
+}

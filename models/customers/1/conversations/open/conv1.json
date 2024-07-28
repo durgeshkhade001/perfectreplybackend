@@ -1,21 +1,20 @@
 {
-    "USER1" : {
+    "_UserReply" : {
+        "userid": "USER1",
         "type": "reply",
         "message": "Hello, I have a question about my account."
     },
-    "AGENT1" : {
+    "_AgentReply" : {
+        "agentid": "AGENT1",
         "type": "reply",
         "message": "Sure, I can help you with that. What is your account number?"
     },
-    "COLLECTDATA" : {
-        "status": "unfilled",
-        "fields": [
-            {
-                "name": "account_number",
-                "type": "text",
-                "label": "Account Number",
-                "required": true
-            }
-        ]
+    "_CollectData" : {
+        "agentid": "AGENT1",
+        "status": "pending",
+        "data": {
+            "customaatrid": "CUSTOMATTR1",
+            "value": ""
+        }
     }
 }
