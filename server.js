@@ -20,6 +20,21 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
+// const io = new Server(server);
+
+// io.on("connection", (socket) => {
+//   console.log("a user connected");
+
+//   socket.on("disconnect", () => {
+//     console.log("user disconnected");
+//   });
+
+//   socket.on("message", (msg) => {
+//     console.log("message: " + msg);
+//     io.emit("message", msg);
+//   });
+// });
+
 server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
