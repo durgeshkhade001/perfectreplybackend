@@ -60,7 +60,6 @@ let users = require(usersFilePath);
 app.post("/newconversation", (req, res) => {
   const { userid, message } = req.body;
   if (users[userid]) {
-    // create new conversation file at __customer1/conversations/conversation1.json
 
   } else {
     res.send("User not found");
