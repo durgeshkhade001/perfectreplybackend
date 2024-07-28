@@ -1,0 +1,49 @@
+{
+    "data" : {
+        "tktcategory": "Customer Ticket",
+        "tkttye": "TKTTYPE1",
+        "stage": 1,
+        "userid": "USER1",
+        "assignedto": {
+            "agentid": "",
+            "teamid": "TEAM2"
+        },
+        "created": "2019-01-01T12:00:00",
+        "isPriority": false
+    },
+    "tktdata" : {
+        "CUSTOMATTR3": "73628232",
+        "CUSTOMATTR4": "I feel the product is not as described"
+    },
+    "thread" : [
+        {
+            "agentid": "AGENT1",
+            "type": "AgentReply",
+            "message": "Are you sure you want to refund the product?"
+        },
+        {
+            "userid": "USER1",
+            "type": "UserReply",
+            "message": "Yes, I am sure."
+        },
+        {
+            "agentid": "AGENT1",
+            "type": "AgentReply",
+            "message": "Yeah! no problem. I will process the refund. I've initiated the refund process. You will receive the refund in 3-5 business days."
+        },
+        {
+            "agentid": "AGENT1",
+            "type": "AgentNote",
+            "message": "Can anyone from @TEAM2(Finance Team) process the refund and close the ticket?"
+        },
+        {
+            "agentid": "AGENT2",
+            "type": "AgentNote",
+            "message": "Done! I've processed the refund."
+        },
+        {
+            "type": "SystemEvent",
+            "message": "@AGENT2(Dan Lok) closed the ticket"
+        }
+    ]
+}
