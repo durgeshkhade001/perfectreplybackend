@@ -54,7 +54,6 @@ app.post("/newconversation", (req, res) => {
     users[userid]["status"] = "online";
     console.log(users[userid]);
     
-    // Write the updated users object back to the JSON file
     fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (err) => {
       if (err) {
         console.error('Error writing to file:', err);
