@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "location": "San Francisco",
+        "timezone": "UTC-8",
+        "company": "Acme Inc",
+        "custom_attributes": {
+            "plan": "enterprise",
+            "status": "active"
+        }
+    },
+
+    {
+        "id": 2,
+        "name": "Sam Doe",
+        "email": "Sam@example.com",
+        "location": "Maharashtra",
+        "timezone": "UTC+5:30",
+        "company": "",
+        "custom_attributes": {
+            "plan": "enterprise",
+            "status": "active"
+        }
+    }
+]
