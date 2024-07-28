@@ -40,6 +40,16 @@
         },
         {
             "agentid": "AGENT1",
+            "type": "AgentNote",
+            "message": "@AGENT2(Dan Lok), Can you please take over this conversation?"
+        },
+        {
+            "agentid": "AGENT2",
+            "type": "AgentNote",
+            "message": "Sure, I will take over."
+        },
+        {
+            "agentid": "AGENT2",
             "type": "AgentReply",
             "message": "Thanks for providing the information. Your account is a Savings account."
         },
