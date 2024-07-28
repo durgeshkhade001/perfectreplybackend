@@ -4,6 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+const fs = require('fs');
+const path = require('path');
 const http = require("http");
 const { Server } = require("socket.io");
 
@@ -33,6 +35,16 @@ app.get("/", (req, res) => {
 
 
 
+function updateJsonFile(filePath, data, callback) {
+  fs.writeFile(filePath, JSON.stringify(data, null, 2), (err) => {
+    if (err) {
+      console.error('Error writing to file:', err);
+      callback(err);
+    } else {
+      callback(null);
+    }
+  });
+}
 
 
 
@@ -41,9 +53,6 @@ app.get("/", (req, res) => {
 
 
 
-
-const fs = require('fs');
-const path = require('path');
 
 const usersFilePath = path.join(__dirname, 'models', 'customers', '__customer1', 'users.json');
 let users = require(usersFilePath);
@@ -51,17 +60,8 @@ let users = require(usersFilePath);
 app.post("/newconversation", (req, res) => {
   const { userid, message } = req.body;
   if (users[userid]) {
-    users[userid]["status"] = "online";
-    console.log(users[userid]);
-    
-    fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (err) => {
-      if (err) {
-        console.error('Error writing to file:', err);
-        res.status(500).send('Error updating user status');
-      } else {
-        res.send('User status updated successfully');
-      }
-    });
+    // create new conversation file at __customer1/conversations/conversation1.json
+
   } else {
     res.send("User not found");
   }
