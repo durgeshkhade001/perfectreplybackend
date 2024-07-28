@@ -3,5 +3,10 @@
         "name" : "Account Number",
         "type" : "text",
         "regex" : "^[0-9]{10}$"
+    },
+    "CUSTOMATTR2" : {
+        "name" : "Plan",
+        "type" : "text",
+        "regex" : "^(enterprise|basic)$"
     }
 }
