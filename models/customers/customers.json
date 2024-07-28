@@ -1,0 +1,10 @@
+{
+    "CUSTOMER1" : {
+        "name" : "John Doe",
+        "email" : "john@mycustomer.com"
+    },
+    "CUSTOMER2" : {
+        "name" : "Sam Doe",
+        "email" : "sam@mycustomer.com"
+    }
+}
