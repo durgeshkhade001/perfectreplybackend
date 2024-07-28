@@ -1,15 +1,13 @@
+console.clear();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const ejs = require('ejs');
 
 dotenv.config();
 
 const app = express();
-
-app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
