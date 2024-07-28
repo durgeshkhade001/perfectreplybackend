@@ -2,7 +2,7 @@
     "data": {
         "customerid": "1",
         "assignedto": {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "teamid": ""
         },
         "created": "2019-01-01T12:00:00",
@@ -10,13 +10,13 @@
     },
     "thread": [
         {
-            "userid": "USER1",
+            "userid": "_user1",
             "type": "UserReply",
             "message": "Hello, I have a question about my account. is my account Current or Savings?",
             "created": "2019-01-01T12:00:00"
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "AgentReply",
             "message": "Sure, I can help you with that. What is your account number?",
             "created": "2019-01-01T12:01:00"
@@ -27,7 +27,7 @@
             "created": "2019-01-01T12:02:00"
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "CollectData",
             "status": "pending",
             "data": [
@@ -44,31 +44,31 @@
             "collected": "2019-01-01T12:05:00"
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "AgentNote",
-            "message": "@AGENT2(Dan Lok), Can you please take over this conversation?",
+            "message": "@__agent2(Dan Lok), Can you please take over this conversation?",
             "created": "2019-01-01T12:06:00"
         },
         {
-            "agentid": "AGENT2",
+            "agentid": "__agent2",
             "type": "AgentNote",
             "message": "Sure, I will take over.",
             "created": "2019-01-01T12:07:00"
         },
         {
-            "agentid": "AGENT2",
+            "agentid": "__agent2",
             "type": "AgentReply",
             "message": "Thanks for providing the information. Your account is a Savings account.",
             "created": "2019-01-01T12:08:00"
         },
         {
-            "userid": "USER1",
+            "userid": "_user1",
             "type": "UserReply",
             "message": "Thank you for the information.",
             "created": "2019-01-01T12:09:00"
         },
         {
-            "agentid": "AGENT1",
+            "agentid": "__agent1",
             "type": "CollectRating",
             "status": "pending",
             "data": {
