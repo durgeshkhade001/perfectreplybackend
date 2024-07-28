@@ -42,20 +42,31 @@ app.get("/", (req, res) => {
 
 
 
+const fs = require('fs');
+const path = require('path');
 
-
-
-
-
-
+const usersFilePath = path.join(__dirname, 'models', 'customers', '__customer1', 'users.json');
+let users = require(usersFilePath);
 
 app.post("/newconversation", (req, res) => {
   const { userid, message } = req.body;
-  console.log(userid + " : " + message);
-  res.send("New conversation created");
+  if (users[userid]) {
+    users[userid]["status"] = "online";
+    console.log(users[userid]);
+    
+    // Write the updated users object back to the JSON file
+    fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to file:', err);
+        res.status(500).send('Error updating user status');
+      } else {
+        res.send('User status updated successfully');
+      }
+    });
+  } else {
+    res.send("User not found");
+  }
 });
-
-
 
 
 
