@@ -1,7 +1,10 @@
 {
     "data": {
         "customerid": "1",
-        "assignedto": "AGENT1",
+        "assignedto": {
+            "agentid": "AGENT1",
+            "teamid": ""
+        },
         "created": "2019-01-01T12:00:00",
         "isPriority": false
     },
