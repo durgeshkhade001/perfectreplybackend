@@ -1,4 +1,3 @@
-// server.js
 console.clear();
 
 const express = require("express");
@@ -8,6 +7,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const http = require("http");
 const chatRoutes = require("./routes/chatRoutes");
+const agentRoutes = require("./routes/agentRoutes");
 const socketManager = require("./utils/socketManager");
 
 dotenv.config();
@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/chat", chatRoutes);
+app.use("/agent", agentRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Not found");

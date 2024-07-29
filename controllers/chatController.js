@@ -1,4 +1,5 @@
 const Chat = require("../models/chat");
+const Agent = require("../models/agent");
 const { emitEvent } = require("../utils/socketManager");
 
 function create_contact_reply_message(contactId, message) {
@@ -34,7 +35,9 @@ const create_chat_reply = async (req, res) => {
 
   let messageObj;
   if (agentToken) {
-    messageObj = create_agent_reply_message(agentToken, message);
+    const agent = await Agent.findOne({ tokens: agentToken });
+    if (!agent) return res.status(400).send({ error: "Invalid token" });
+    messageObj = create_agent_reply_message(agent._id, message);
   } else if (contactId) {
     messageObj = create_contact_reply_message(contactId, message);
   } else {
