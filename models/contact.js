@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const contactSchema = new Schema({
-    owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
     name: {
         type: String,
         required: true
@@ -21,9 +17,9 @@ const contactSchema = new Schema({
     email: {
         type: String
     },
-    online: {
-        type: Boolean,
-        default: false
+    custom_fields: {
+        type: Object,
+        default: {}
     }
 }, { timestamps: true });
 
