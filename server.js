@@ -1,3 +1,4 @@
+// server.js
 console.clear();
 
 const express = require("express");
@@ -6,8 +7,8 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const http = require("http");
-const { Server } = require("socket.io");
 const chatRoutes = require("./routes/chatRoutes");
+const socketManager = require("./utils/socketManager");
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 const server = http.createServer(app);
+socketManager.init(server);
 
 const dbURI = process.env.MONGODB_URI;
 mongoose
@@ -39,38 +41,3 @@ app.use("/chat", chatRoutes);
 app.use((req, res) => {
   res.status(404).send("Page not found");
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const io = new Server(server);
-
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
-
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-
-//   socket.on("message", (msg) => {
-//     console.log("message: " + msg);
-//     io.emit
