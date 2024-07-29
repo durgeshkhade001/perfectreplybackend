@@ -19,6 +19,12 @@ const create_new_chat = async (req, res) => {
   }
 };
 
+const create_system_event_message = (message) => ({
+  type: "SystemEvent",
+  message,
+  created: new Date().toISOString(),
+});
+
 const create_chat_reply = async (req, res) => {
   const { agentToken, contactId, chatId, message } = req.body;
 
@@ -59,7 +65,14 @@ const toggle_chat_priority = async (req, res) => {
     if (error) return res.status(400).send({ error });
 
     chat.priority = !chat.priority;
+    const systemEventMessage = create_system_event_message(
+      `${agent.name} ${chat.priority ? "marked" : "unmarked"} this chat as priority`
+    );
+    chat.thread.push(systemEventMessage);
     await chat.save();
+
+    
+    emitEvent("chat_" + chatId, systemEventMessage);
     res.status(200).send();
   } catch (error) {
     res.status(500).send({ error: "Failed to toggle chat priority" });
