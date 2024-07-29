@@ -3,6 +3,7 @@ const { emitEvent } = require("../utils/socketManager");
 
 
 const create_new_chat = (req, res) => { 
+  // 
   const chat = new Chat();
   const chatId = chat._id;
   res.send({ chatId });
