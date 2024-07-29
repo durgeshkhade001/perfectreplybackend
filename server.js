@@ -18,14 +18,13 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 const server = http.createServer(app);
 
-// MongoDB connection
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/mydatabase";
+const dbURI = process.env.MONGODB_URI;
 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURI)
   .then(() => {
-    console.log('MongoDB connected...');
+    console.log('Connected to MongoDB');
     server.listen(3000, () => {
-      console.log("Server is running on port 3000");
+      console.log("Server is running on port 3000 \n---------------------------------");
     });
   })
   .catch(err => {
@@ -36,6 +35,18 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
+
+
+
+
+
+
+
+
+
+
+
+
 
 // const io = new Server(server);
 
@@ -48,6 +59,4 @@ app.get("/", (req, res) => {
 
 //   socket.on("message", (msg) => {
 //     console.log("message: " + msg);
-//     io.emit("message", msg);
-//   });
-// });
+//     io.emit
