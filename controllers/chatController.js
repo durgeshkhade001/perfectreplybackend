@@ -72,7 +72,9 @@ const create_chat_note = async (req, res) => {
       const agentId = message.split("$_mention_agentId_")[1].split("_$")[0];
       const mentionedAgent = await Agent.findById(agentId);
       if (mentionedAgent) {
-        chat.mentions.push(mentionedAgent._id);
+        if (!chat.mentions.includes(mentionedAgent._id)) {
+          chat.mentions.push(mentionedAgent._id);
+        }
         const systemEventMessage = create_system_event_message(
           `${agent.name} mentioned ${mentionedAgent.name} in this chat`
         );
