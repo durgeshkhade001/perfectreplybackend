@@ -4,7 +4,7 @@ function generateToken() {
     return Math.random().toString(36).substr(2);
 }
 
-const register = async (req, res) => {
+const create = async (req, res) => {
     const { username, name, password } = req.body;
     const agent = new Agent({ username, name, password });
     await agent.save();
@@ -41,7 +41,7 @@ const logouteverywhere = async (req, res) => {
 
 
 module.exports = {
-    register,
+    create,
     login,
     logout,
     logouteverywhere
