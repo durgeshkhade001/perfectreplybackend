@@ -7,12 +7,12 @@ router.post('/new', chatController.create_new_chat);
 router.post('/reply', chatController.create_chat_reply);
 router.post('/note', chatController.create_chat_note);
 router.post('/priority', chatController.toggle_chat_priority);
+router.put('/assign', chatController.update_chat_assignee);
 router.post('/close', chatController.close_chat);
 router.get('/:id', chatController.get_chat);
-
-// router.post('/get/all', chatController.somefunction);
-// router.post('/get/unassigned', chatController.somefunction);
-// router.post('/get/mentions', chatController.somefunction);
-// router.post('/get/team/:id', chatController.somefunction);
+router.post('/get/mentions', chatController.get_chats_with_mentions);
+router.post('/get/assigned', chatController.get_assigned_chats);
+router.post('/get/unassigned', chatController.get_unassigned_chats);
+// router.post('/get/team/:id', chatController.get_team_chats);
 
 module.exports = router;

@@ -153,11 +153,107 @@ const close_chat = async (req, res) => {
   }
 };
 
+const get_chats_with_mentions = async (req, res) => {
+  const { agentToken } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const chats = await Chat.find({ mentions: agent._id });
+    chats.forEach(chat => {
+      chat.thread = [];
+    });
+    res.status(200).send(chats);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to get chats with mentions" });
+  }
+};
+
+const get_assigned_chats = async (req, res) => {
+  const { agentToken } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const chats = await Chat.find({ assignee: agent._id });
+    chats.forEach(chat => {
+      chat.thread = [];
+    });
+    res.status(200).send(chats);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to get assigned chats" });
+  }
+};
+
+const update_chat_assignee = async (req, res) => {
+  const { agentToken, chatId, assigneeId } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+    
+
+    let systemEventMessage;
+    if (!assigneeId) {
+      chat.assignee = agent._id;
+      systemEventMessage = create_system_event_message(`${agent.name} assigned this chat to themselves`);
+    } else if (assigneeId === "unassign") {
+      chat.assignee = null;
+      systemEventMessage = create_system_event_message(`${agent.name} unassigned this chat`);
+    } else {
+      const assignee = await Agent.findById(assigneeId);
+      if (!assignee) return res.status(404).send({ error: "Assignee not found" });
+      chat.assignee = assigneeId;
+      if (assigneeId.toString() === agent._id.toString()) {
+        systemEventMessage = create_system_event_message(`${agent.name} assigned this chat to themselves`);  
+      } else {
+        systemEventMessage = create_system_event_message(`${agent.name} assigned this chat to ${assignee.name}`);
+      }
+    }
+
+    chat.thread.push(systemEventMessage);
+    await chat.save();
+
+    emitEvent("chat_" + chatId, systemEventMessage);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to update chat assignee" });
+  }
+};
+
+const get_unassigned_chats = async (req, res) => {
+  const { agentToken } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const chats = await Chat.find({ assignee: null });
+    chats.forEach(chat => {
+      chat.thread = [];
+    });
+    res.status(200).send(chats);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to get unassigned chats" });
+  }
+};
+
+    
+
 module.exports = {
   create_new_chat,
   create_chat_reply,
   create_chat_note,
   toggle_chat_priority,
+  update_chat_assignee,
   close_chat,
   get_chat,
+  get_chats_with_mentions,
+  get_assigned_chats,
+  get_unassigned_chats
 };

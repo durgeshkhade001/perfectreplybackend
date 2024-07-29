@@ -1,0 +1,25 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const teamSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: String,
+    default: "👥",
+  },
+  members: {
+    type: [Schema.Types.ObjectId],
+    ref: "User",
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Team = mongoose.model("Team", teamSchema);
+module.exports = Team;
