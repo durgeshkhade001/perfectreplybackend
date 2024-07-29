@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const agentSchema = new Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
     name: {
         type: String,
         required: true
@@ -16,7 +21,12 @@ const agentSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+    },
+    tokens: {
+        type: Array,
+        default: []
     }
 }, { timestamps: true });
 

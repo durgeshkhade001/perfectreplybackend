@@ -6,7 +6,7 @@ function create_contact_reply_message(contactId, message) {
     contactId,
     type: "ContactReply",
     message,
-    created: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   };
 }
 
@@ -15,7 +15,7 @@ function create_agent_reply_message(agentid, message) {
     agentid,
     type: "AgentReply",
     message,
-    created: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   };
 }
 
@@ -48,7 +48,6 @@ const create_chat_reply = async (req, res) => {
   res.status(200).send();
 };
 
-
 const get_chat = async (req, res) => {
   const chatId = req.params.id;
   const chat = await Chat.findById(chatId);
@@ -59,5 +58,5 @@ const get_chat = async (req, res) => {
 module.exports = {
   create_new_chat,
   create_chat_reply,
-  get_chat
+  get_chat,
 };
