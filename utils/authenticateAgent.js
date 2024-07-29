@@ -1,9 +1,9 @@
 const Agent = require("../models/agent");
 
 const authenticateAgent = async (agentToken) => {
-  if (!agentToken) return { error: "Invalid request" };
+  if (!agentToken) return { error: "Missing agentToken" };
   const agent = await Agent.findOne({ tokens: agentToken });
-  if (!agent) return { error: "Invalid token" };
+  if (!agent) return { error: "Invalid agentToken" };
   return { agent };
 };
 

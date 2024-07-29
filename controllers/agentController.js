@@ -18,7 +18,7 @@ const login = async (req, res) => {
     const token = generateToken();
     agent.tokens.push(token);
     await agent.save();
-    res.status(200).send({ token });
+    res.status(200).send({ agentToken: token });
 };
 
 const logout = async (req, res) => {
@@ -30,7 +30,7 @@ const logout = async (req, res) => {
     res.status(200).send();
 };
 
-const logouteverywhere = async (req, res) => {
+const logout_everywhere = async (req, res) => {
     const { agentToken } = req.body;
     const agent = await Agent.findOne({ tokens: agentToken });
     if (!agent) return res.status(400).send({ error: "Invalid token" });
@@ -44,5 +44,5 @@ module.exports = {
     create,
     login,
     logout,
-    logouteverywhere
+    logout_everywhere
 };
