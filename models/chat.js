@@ -6,6 +6,10 @@ const chatSchema = new Schema({
         type: Boolean,
         default: false
     },
+    open: {
+        type: Boolean,
+        default: true
+    },
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team',

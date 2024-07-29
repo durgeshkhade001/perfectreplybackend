@@ -126,10 +126,38 @@ const get_chat = async (req, res) => {
   }
 };
 
+const close_chat = async (req, res) => {
+  const { agentToken, chatId } = req.body;
+
+  try {
+    let systemEventMessage;
+    if(agentToken) {
+      const { error, agent } = await authenticateAgent(agentToken);
+      if (error) return res.status(400).send({ error });
+      systemEventMessage = create_system_event_message(`${agent.name} closed this chat`);
+    } else {
+      systemEventMessage = create_system_event_message("Chat closed");
+    }
+
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+    
+    chat.open = false;
+    chat.thread.push(systemEventMessage);
+    await chat.save();
+
+    emitEvent("chat_" + chatId, systemEventMessage);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to close chat" });
+  }
+};
+
 module.exports = {
   create_new_chat,
   create_chat_reply,
   create_chat_note,
   toggle_chat_priority,
+  close_chat,
   get_chat,
 };
