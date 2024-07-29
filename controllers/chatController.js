@@ -1,10 +1,10 @@
 const Chat = require("../models/chat");
 const { emitEvent } = require("../utils/socketManager");
 
-function create_user_reply_message(userid, message) {
+function create_contact_reply_message(contactId, message) {
   return {
-    userid,
-    type: "UserReply",
+    contactId,
+    type: "ContactReply",
     message,
     created: new Date().toISOString(),
   };
@@ -27,7 +27,7 @@ const create_new_chat = async (req, res) => {
 };
 
 const create_chat_reply = async (req, res) => {
-  const { agentToken, chatId, message } = req.body;
+  const { agentToken, contactId, chatId, message } = req.body;
 
   const chat = await Chat.findById(chatId);
   if (!chat) return res.status(404).send({ error: "Chat not found" });
@@ -35,8 +35,10 @@ const create_chat_reply = async (req, res) => {
   let messageObj;
   if (agentToken) {
     messageObj = create_agent_reply_message(agentToken, message);
+  } else if (contactId) {
+    messageObj = create_contact_reply_message(contactId, message);
   } else {
-    messageObj = create_user_reply_message("unknownUser", message);
+    return res.status(400).send({ error: "Invalid request" });
   }
 
   chat.thread.push(messageObj);
@@ -46,7 +48,16 @@ const create_chat_reply = async (req, res) => {
   res.status(200).send();
 };
 
+
+const get_chat = async (req, res) => {
+  const chatId = req.params.id;
+  const chat = await Chat.findById(chatId);
+  if (!chat) return res.status(404).send({ error: "Chat not found" });
+  res.status(200).send(chat);
+};
+
 module.exports = {
   create_new_chat,
   create_chat_reply,
+  get_chat
 };
