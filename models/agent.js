@@ -23,7 +23,6 @@ const agentSchema = new Schema({
     },
     email: {
         type: String,
-        unique: true
     },
     tokens: {
         type: Array,

@@ -1,4 +1,5 @@
 const Chat = require("../models/chat");
+const Agent = require("../models/agent");
 const { emitEvent } = require("../utils/socketManager");
 const { authenticateAgent } = require("../utils/authenticateAgent");
 
@@ -54,6 +55,40 @@ const create_chat_reply = async (req, res) => {
   }
 };
 
+const create_chat_note = async (req, res) => {
+  const { agentToken, chatId, message } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const messageObj = createMessage("Note", "agentid", agent._id, message);
+    chat.thread.push(messageObj);
+
+    if (message.includes("$_mention_agentId_")) {
+      const agentId = message.split("$_mention_agentId_")[1].split("_$")[0];
+      const mentionedAgent = await Agent.findById(agentId);
+      if (mentionedAgent) {
+        chat.mentions.push(mentionedAgent._id);
+        const systemEventMessage = create_system_event_message(
+          `${agent.name} mentioned ${mentionedAgent.name} in this chat`
+        );
+        chat.thread.push(systemEventMessage);
+        emitEvent("chat_" + chatId, systemEventMessage);
+      }
+    }
+    await chat.save();
+
+    emitEvent("chat_" + chatId, messageObj);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to create chat note" });
+  }
+};
+
 const toggle_chat_priority = async (req, res) => {
   const { agentToken, chatId } = req.body;
 
@@ -92,6 +127,7 @@ const get_chat = async (req, res) => {
 module.exports = {
   create_new_chat,
   create_chat_reply,
+  create_chat_note,
   toggle_chat_priority,
   get_chat,
 };

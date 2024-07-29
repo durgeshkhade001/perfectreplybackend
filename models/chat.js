@@ -16,6 +16,10 @@ const chatSchema = new Schema({
         ref: 'Agent',
         default: null
     },
+    mentions: {
+        type: Array,
+        default: []
+    },
     thread: {
         type: Array,
         default: []

@@ -5,8 +5,8 @@ function generateToken() {
 }
 
 const create = async (req, res) => {
-    const { username, name, password } = req.body;
-    const agent = new Agent({ username, name, password });
+    const { username, name, password, email } = req.body;
+    const agent = new Agent({ username, name, password, email });
     await agent.save();
     res.status(201).send(agent);
 };
