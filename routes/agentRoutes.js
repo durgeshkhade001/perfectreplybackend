@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/register', agentController.register);
 router.post('/login', agentController.login);
 router.post('/logout', agentController.logout);
-router.post('/logouteverywhere', agentController.logouteverywhere);
+router.post('/logout/everywhere', agentController.logouteverywhere);
 
 module.exports = router;
