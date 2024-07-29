@@ -1,6 +1,6 @@
 const Chat = require("../models/chat");
-const Agent = require("../models/agent");
 const { emitEvent } = require("../utils/socketManager");
+const { authenticateAgent } = require("../utils/authenticateAgent");
 
 const createMessage = (type, idKey, id, message) => ({
   [idKey]: id,
@@ -28,8 +28,9 @@ const create_chat_reply = async (req, res) => {
 
     let messageObj;
     if (agentToken) {
-      const agent = await Agent.findOne({ tokens: agentToken });
-      if (!agent) return res.status(400).send({ error: "Invalid token" });
+      const { error, agent } = await authenticateAgent(agentToken);
+      if (error) return res.status(400).send({ error });
+
       messageObj = createMessage("AgentReply", "agentid", agent._id, message);
     } else if (contactId) {
       messageObj = createMessage("ContactReply", "contactId", contactId, message);
@@ -47,6 +48,24 @@ const create_chat_reply = async (req, res) => {
   }
 };
 
+const toggle_chat_priority = async (req, res) => {
+  const { agentToken, chatId } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    chat.priority = !chat.priority;
+    await chat.save();
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to toggle chat priority" });
+  }
+};
+
 const get_chat = async (req, res) => {
   try {
     const chat = await Chat.findById(req.params.id);
@@ -60,5 +79,6 @@ const get_chat = async (req, res) => {
 module.exports = {
   create_new_chat,
   create_chat_reply,
+  toggle_chat_priority,
   get_chat,
 };
