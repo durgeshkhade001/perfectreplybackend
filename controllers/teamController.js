@@ -16,7 +16,7 @@ const create_new_team = async (req, res) => {
         });
 
         const savedTeam = await team.save();
-        res.send(savedTeam);
+        res.status(200).send();
     } catch (error) {
         res.status(400).send({ error });
     }
