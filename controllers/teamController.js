@@ -22,7 +22,23 @@ const create_new_team = async (req, res) => {
     }
 }
 
+const add_team_members = async (req, res) => {
+}
+
+const remove_team_members = async (req, res) => {
+}
+
+const update_team = async (req, res) => {
+}
+
+const get_team = async (req, res) => {
+}
+
 
 module.exports = {
-    create_new_team
+    create_new_team,
+    add_team_members,
+    remove_team_members,
+    update_team,
+    get_team
 }
