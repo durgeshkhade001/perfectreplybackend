@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 const http = require("http");
 const chatRoutes = require("./routes/chatRoutes");
 const agentRoutes = require("./routes/agentRoutes");
+const teamRoutes = require("./routes/teamRoutes");
 const socketManager = require("./utils/socketManager");
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
 
 app.use("/chat", chatRoutes);
 app.use("/agent", agentRoutes);
+app.use("/team", teamRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");

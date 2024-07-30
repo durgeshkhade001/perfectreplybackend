@@ -13,6 +13,6 @@ router.get('/:id', chatController.get_chat);
 router.post('/get/mentions', chatController.get_chats_with_mentions);
 router.post('/get/assigned', chatController.get_assigned_chats);
 router.post('/get/unassigned', chatController.get_unassigned_chats);
-// router.post('/get/team/:id', chatController.get_team_chats);
+router.post('/get/team', chatController.get_team_chats);
 
 module.exports = router;

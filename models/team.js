@@ -8,7 +8,7 @@ const teamSchema = new Schema({
   },
   icon: {
     type: String,
-    default: "👥",
+    default: "i_1_1",
   },
   members: {
     type: [Schema.Types.ObjectId],

@@ -1,5 +1,6 @@
 const Chat = require("../models/chat");
 const Agent = require("../models/agent");
+const Team = require("../models/team");
 const { emitEvent } = require("../utils/socketManager");
 const { authenticateAgent } = require("../utils/authenticateAgent");
 
@@ -243,6 +244,25 @@ const get_unassigned_chats = async (req, res) => {
   }
 };
 
+const get_team_chats = async (req, res) => {
+  const { agentToken, teamId } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).send({ error: "Team not found" });
+
+    const chats = await Chat.find({ team: team._id });
+    chats.forEach(chat => {
+      chat.thread = [];
+    });
+    res.status(200).send(chats);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to get team chats" });
+  }
+}
     
 
 module.exports = {
@@ -255,5 +275,6 @@ module.exports = {
   get_chat,
   get_chats_with_mentions,
   get_assigned_chats,
-  get_unassigned_chats
+  get_unassigned_chats,
+  get_team_chats
 };
