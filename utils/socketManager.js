@@ -12,7 +12,7 @@ const init = (httpServer) => {
       if (!clientId) {
         socket.disconnect();
       }
-    }, 5000);
+    }, 1000);
 
     socket.on("conn", (id) => {
       if (typeof id !== 'string' || id.trim() === '') {
