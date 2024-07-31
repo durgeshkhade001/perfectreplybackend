@@ -1,4 +1,5 @@
 const Attribute = require("../models/attribute");
+const { authenticateAgent } = require("../utils/authenticateAgent");
 
 
 const create_attribute = async (req, res) => {
@@ -46,12 +47,12 @@ const delete_attribute = async (req, res) => {
         const { error, agent } = await authenticateAgent(agentToken);
         if (error) return res.status(400).send({ error });
 
-        const attribute = await Attribute.findById(attributeId);
-        if (!attribute) return res.status(404).send({ error: "Attribute not found" });
+        const result = await Attribute.deleteOne({ _id: attributeId });
+        if (result.deletedCount === 0) return res.status(404).send({ error: "Attribute not found" });
 
-        await attribute.delete();
         res.status(200).send();
     } catch (error) {
+        console.log(error);
         res.status(500).send({ error: "Failed to delete attribute" });
     }
 }
