@@ -8,6 +8,7 @@ const { authenticateAgent } = require("../utils/authenticateAgent");
 const createMessage = (type, idKey, id, message) => ({
   [idKey]: id,
   type,
+  status: "sent",
   message,
   createdAt: new Date().toISOString(),
 });
@@ -54,6 +55,9 @@ const create_chat_reply = async (req, res) => {
       if (error) return res.status(400).send({ error });
 
       messageObj = createMessage("AgentReply", "agentid", agent._id, message);
+      if(!chat.assignee) {
+        chat.assignee = agent._id;
+      }
     } else if (contactId) {
       messageObj = createMessage("ContactReply", "contactId", contactId, message);
     } else {
@@ -330,6 +334,42 @@ const fill_collectdata = async (req, res) => {
     res.status(500).send({ error: "Failed to fill data collection" });
   }
 }
+
+const mark_chat_viewed = async (req, res) => {
+  const { agentToken, contactId, chatId } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+
+    if (agentToken) {
+      const { error, agent } = await authenticateAgent(agentToken);
+      if (error) return res.status(400).send({ error });
+
+      if (chat.assignee && chat.assignee.toString() !== agent._id.toString()) {
+        return res.status(400).send({ error: "Chat not assigned to you" });
+      }
+
+      chat.thread.forEach(message => {
+        if (message.type === "ContactReply") {
+          message.status = "viewed";
+        }
+      });
+    } else {
+      chat.thread.forEach(message => {
+        if (message.type === "AgentReply") {
+          message.status = "viewed";
+        }
+      });
+    }
+
+    chat.markModified('thread');
+    await chat.save();
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to mark chat as viewed" });
+  }
+}
     
 
 module.exports = {
@@ -345,5 +385,6 @@ module.exports = {
   get_unassigned_chats,
   get_team_chats,
   new_collectdata,
-  fill_collectdata
+  fill_collectdata,
+  mark_chat_viewed
 };
