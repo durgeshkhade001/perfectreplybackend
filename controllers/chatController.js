@@ -18,26 +18,6 @@ const create_system_event_message = (message) => ({
   created: new Date().toISOString(),
 });
 
-
-// {
-//   "_id": "no of CollectData+1",
-//   "agentid": "__agent1",
-//   "type": "CollectData",
-//   "status": "pending",
-//   "data": [
-//       {
-//           "attributeId": "__attributeId",
-//           "value": ""
-//       },
-//       {
-//           "attributeId": "__attributeId",
-//           "value": ""
-//       }
-//   ],
-//   "created": "2019-01-01T12:03:00",
-//   "collected": "2019-01-01T12:05:00"
-// },
-
 const create_data_collection = (agentId, collectionId, collect) => ({
   __id: collectionId,
   agentid: agentId,
