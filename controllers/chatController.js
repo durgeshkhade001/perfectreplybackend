@@ -278,7 +278,7 @@ const get_team_chats = async (req, res) => {
   }
 }
 
-const collectdata = async (req, res) => {
+const new_collectdata = async (req, res) => {
   const { agentToken, chatId, collect } = req.body;
 
   try {
@@ -304,7 +304,7 @@ const collectdata = async (req, res) => {
   }
 }
 
-const collectdata_fill = async (req, res) => {
+const fill_collectdata = async (req, res) => {
   const { chatId, collectionId, collect } = req.body;
 
   try {
@@ -344,6 +344,6 @@ module.exports = {
   get_assigned_chats,
   get_unassigned_chats,
   get_team_chats,
-  collectdata,
-  collectdata_fill
+  new_collectdata,
+  fill_collectdata
 };
