@@ -15,14 +15,6 @@ const attributeSchema = new Schema({
         type: String,
         default: 'No description'
     },
-    regex: {
-        type: String,
-        default: '^.*$'
-    },
-    defaultValue: {
-        type: String,
-        default: ''
-    },
 }, { timestamps: true });
 
 const Attribute = mongoose.model('Attribute', attributeSchema);

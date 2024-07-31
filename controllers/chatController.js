@@ -1,6 +1,7 @@
 const Chat = require("../models/chat");
 const Agent = require("../models/agent");
 const Team = require("../models/team");
+const Attribute = require("../models/attribute");
 const { emitEvent } = require("../utils/socketManager");
 const { authenticateAgent } = require("../utils/authenticateAgent");
 
@@ -11,6 +12,45 @@ const createMessage = (type, idKey, id, message) => ({
   createdAt: new Date().toISOString(),
 });
 
+const create_system_event_message = (message) => ({
+  type: "SystemEvent",
+  message,
+  created: new Date().toISOString(),
+});
+
+
+// {
+//   "_id": "no of CollectData+1",
+//   "agentid": "__agent1",
+//   "type": "CollectData",
+//   "status": "pending",
+//   "data": [
+//       {
+//           "attributeId": "__attributeId",
+//           "value": ""
+//       },
+//       {
+//           "attributeId": "__attributeId",
+//           "value": ""
+//       }
+//   ],
+//   "created": "2019-01-01T12:03:00",
+//   "collected": "2019-01-01T12:05:00"
+// },
+
+const create_data_collection = (agentId, collectionId, collect) => ({
+  __id: collectionId,
+  agentid: agentId,
+  type: "CollectData",
+  status: "pending",
+  data: collect.map(attributeId => ({
+    attributeId,
+    value: ""
+  })),
+  created: new Date().toISOString()
+});
+
+
 const create_new_chat = async (req, res) => {
   try {
     const chat = new Chat();
@@ -20,12 +60,6 @@ const create_new_chat = async (req, res) => {
     res.status(500).send({ error: "Failed to create chat" });
   }
 };
-
-const create_system_event_message = (message) => ({
-  type: "SystemEvent",
-  message,
-  created: new Date().toISOString(),
-});
 
 const create_chat_reply = async (req, res) => {
   const { agentToken, contactId, chatId, message } = req.body;
@@ -263,6 +297,59 @@ const get_team_chats = async (req, res) => {
     res.status(500).send({ error: "Failed to get team chats" });
   }
 }
+
+const collectdata = async (req, res) => {
+  const { agentToken, chatId, collect } = req.body;
+
+  try {
+    const { error, agent } = await authenticateAgent(agentToken);
+    if (error) return res.status(400).send({ error });
+
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+
+    if (collect.length === 0) return res.status(400).send({ error: "No attributes to collect" });
+    const attributes = await Attribute.find({ _id: { $in: collect } });
+    if (attributes.length !== collect.length) return res.status(400).send({ error: "One or more attributes not found" });
+
+    const collectionId = "collect" + (chat.thread.filter(message => message.type === "CollectData").length + 1);
+    const dataCollection = create_data_collection(agent._id, collectionId, collect);
+    chat.thread.push(dataCollection);
+    await chat.save();
+
+    emitEvent("chat_" + chatId, dataCollection);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to collect data" });
+  }
+}
+
+const collectdata_fill = async (req, res) => {
+  const { chatId, collectionId, collect } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send({ error: "Chat not found" });
+
+    const dataCollection = chat.thread.find(message => message.__id === collectionId);
+    if (!dataCollection) return res.status(404).send({ error: "Data collection not found" });
+    if (dataCollection.status === "collected") return res.status(400).send({ error: "Data collection already filled" });
+    if (collect.length !== dataCollection.data.length) return res.status(400).send({ error: "Invalid data collection" });
+
+    dataCollection.data.forEach((data, index) => {
+      data.value = collect[index].toString();
+    });
+    dataCollection.status = "collected";
+    dataCollection.collected = new Date().toISOString();
+    chat.markModified('thread');
+    await chat.save();
+
+    emitEvent("chat_" + chatId, dataCollection);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send({ error: "Failed to fill data collection" });
+  }
+}
     
 
 module.exports = {
@@ -276,5 +363,7 @@ module.exports = {
   get_chats_with_mentions,
   get_assigned_chats,
   get_unassigned_chats,
-  get_team_chats
+  get_team_chats,
+  collectdata,
+  collectdata_fill
 };

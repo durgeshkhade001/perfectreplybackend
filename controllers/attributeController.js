@@ -3,13 +3,13 @@ const { authenticateAgent } = require("../utils/authenticateAgent");
 
 
 const create_attribute = async (req, res) => {
-    const { agentToken, name, icon, description, regex, defaultValue } = req.body;
+    const { agentToken, name, icon, description } = req.body;
 
     try {
         const { error, agent } = await authenticateAgent(agentToken);
         if (error) return res.status(400).send({ error });
 
-        const attribute = new Attribute({ name, icon, description, regex, defaultValue });
+        const attribute = new Attribute({ name, icon, description });
         await attribute.save();
 
         res.status(200).send();
@@ -19,7 +19,7 @@ const create_attribute = async (req, res) => {
 }
 
 const update_attribute = async (req, res) => {
-    const { agentToken, attributeId, name, icon, description, regex, defaultValue } = req.body;
+    const { agentToken, attributeId, name, icon, description } = req.body;
 
     try {
         const { error, agent } = await authenticateAgent(agentToken);
@@ -31,7 +31,6 @@ const update_attribute = async (req, res) => {
         if (name) attribute.name = name;
         if (icon) attribute.icon = icon;
         if (description) attribute.description = description;
-        if (regex) attribute.regex = regex;
 
         await attribute.save();
         res.status(200).send();
