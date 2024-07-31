@@ -222,12 +222,8 @@ const update_chat_assignee = async (req, res) => {
     const chat = await Chat.findById(chatId);
     if (!chat) return res.status(404).send({ error: "Chat not found" });
     
-
     let systemEventMessage;
-    if (!assigneeId) {
-      chat.assignee = agent._id;
-      systemEventMessage = create_system_event_message(`${agent.name} assigned this chat to themselves`);
-    } else if (assigneeId === "unassign") {
+    if (assigneeId === "unassign") {
       chat.assignee = null;
       systemEventMessage = create_system_event_message(`${agent.name} unassigned this chat`);
     } else {
