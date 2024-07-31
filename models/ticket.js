@@ -7,9 +7,9 @@ const ticketSchema = new Schema({
         ref: "TicketType",
         required: true,
     },
-    collecteddata: {
+    collectdata: {
         type: Array,
-        default: [],
+        required: true
     },
     stage: {
         type: String,
