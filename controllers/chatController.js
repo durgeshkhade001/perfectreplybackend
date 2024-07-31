@@ -57,6 +57,12 @@ const create_chat_reply = async (req, res) => {
       messageObj = createMessage("AgentReply", "agentid", agent._id, message);
       if(!chat.assignee) {
         chat.assignee = agent._id;
+        chat.thread.forEach(message => {
+          if (message.type === "ContactReply" && message.status === "sent") {
+            message.status = "viewed";
+          }
+        });
+        chat.markModified('thread');
       }
     } else if (contactId) {
       messageObj = createMessage("ContactReply", "contactId", contactId, message);
