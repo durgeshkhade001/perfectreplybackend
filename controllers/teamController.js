@@ -1,4 +1,5 @@
 const Team = require("../models/team");
+const Agent = require("../models/agent");
 const { authenticateAgent } = require("../utils/authenticateAgent");
 
 
@@ -22,7 +23,7 @@ const create_new_team = async (req, res) => {
     }
 }
 
-const add_team_members = async (req, res) => {  // Not Tested
+const add_team_members = async (req, res) => {
     const { agentToken, teamId, members } = req.body;
 
     try {
@@ -32,7 +33,11 @@ const add_team_members = async (req, res) => {  // Not Tested
         const team = await Team.findById(teamId);
         if (!team) return res.status(400).send({ error: "Team not found" });
 
-        team.members = [...new Set([...team.members, ...members])];
+        const existingMembers = await Agent.find({ _id: { $in: members } });
+        if (existingMembers.length !== members.length) return res.status(400).send({ error: "One or more members not found" });
+
+        const membersToAdd = members.filter(member => !team.members.includes(member));
+        team.members = [...team.members, ...membersToAdd];
         await team.save();
 
         res.status(200).send();
@@ -41,7 +46,7 @@ const add_team_members = async (req, res) => {  // Not Tested
     }
 }
 
-const remove_team_members = async (req, res) => {   // Not Tested
+const remove_team_members = async (req, res) => {
     const { agentToken, teamId, members } = req.body;
 
     try {
@@ -51,7 +56,7 @@ const remove_team_members = async (req, res) => {   // Not Tested
         const team = await Team.findById(teamId);
         if (!team) return res.status(400).send({ error: "Team not found" });
 
-        team.members = team.members.filter(member => !members.includes(member));
+        team.members = team.members.filter(member => !members.includes(member.toString()));
         await team.save();
 
         res.status(200).send();
@@ -60,7 +65,7 @@ const remove_team_members = async (req, res) => {   // Not Tested
     }
 }
 
-const update_team = async (req, res) => {   // Not Tested
+const update_team = async (req, res) => {
     const { agentToken, teamId, name, icon } = req.body;
 
     try {
@@ -80,7 +85,7 @@ const update_team = async (req, res) => {   // Not Tested
     }
 }
 
-const get_team = async (req, res) => {  // Not Tested
+const get_team = async (req, res) => {
     const { agentToken, teamId } = req.body;
 
     try {
