@@ -57,6 +57,12 @@ const create_chat_reply = async (req, res) => {
       messageObj = createMessage("AgentReply", "agentid", agent._id, message);
       if(!chat.assignee) {
         chat.assignee = agent._id;
+        chat.thread.forEach(message => {
+          if (message.type === "ContactReply") {
+            message.status = "viewed";
+          }
+        });
+        chat.markModified('thread');
       }
     } else if (contactId) {
       messageObj = createMessage("ContactReply", "contactId", contactId, message);
@@ -370,7 +376,7 @@ const mark_chat_viewed = async (req, res) => {
     res.status(500).send({ error: "Failed to mark chat as viewed" });
   }
 }
-    
+
 
 module.exports = {
   create_new_chat,
