@@ -10,6 +10,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const agentRoutes = require("./routes/agentRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const attributeRoutes = require("./routes/attributeRoutes");
+const ticketTypeRoutes = require("./routes/ticketTypeRoutes");
 const socketManager = require("./utils/socketManager");
 
 dotenv.config();
@@ -42,6 +43,7 @@ app.use("/chat", chatRoutes);
 app.use("/agent", agentRoutes);
 app.use("/team", teamRoutes);
 app.use("/attribute", attributeRoutes);
+app.use("/tickettype", ticketTypeRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
