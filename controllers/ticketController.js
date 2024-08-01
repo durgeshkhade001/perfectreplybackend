@@ -2,9 +2,10 @@ const Ticket = require('../models/ticket');
 const TicketType = require('../models/ticketType');
 const Agent = require('../models/agent');
 const Team = require('../models/team');
+const { emitEvent } = require("../utils/socketManager");
 const { authenticateAgent } = require('../utils/authenticateAgent');
 
-// ################## INCOMPLETE AND UNTESTED ##################
+// ################## UNTESTED ##################
 
 const createMessage = (type, idKey, id, message) => ({
     [idKey]: id,
@@ -61,10 +62,13 @@ const update_ticket_stage = async (req, res) => {
             return res.status(400).json({ message: `Invalid stage` });
         }
 
-        ticket.thread.push(create_system_event_message(`${agent.name} moved the ticket to ${stage}`));
+        const systemEventMessage = create_system_event_message(`${agent.name} moved the ticket to ${stage}`);
+        ticket.thread.push(systemEventMessage);
 
         ticket.stage = stage;
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, systemEventMessage);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -91,15 +95,17 @@ const assign_ticket = async (req, res) => {
         let systemEventMessage;
 
         if (assigneeId === agent._id) {
-            systemEventMessage = `${agent.name} assigned the ticket to themselves`;
+            systemEventMessage = create_system_event_message(`${agent.name} assigned the ticket to themselves`);
         } else {
-            systemEventMessage = `${agent.name} assigned the ticket to ${assignee.name}`;
+            systemEventMessage = create_system_event_message(`${agent.name} assigned the ticket to ${assignee.name}`);
         }
 
-        ticket.thread.push(create_system_event_message(systemEventMessage));
+        ticket.thread.push(systemEventMessage);
 
         ticket.assignee = assignee._id;
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, systemEventMessage);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -123,10 +129,13 @@ const assign_ticket_team = async (req, res) => {
             return res.status(400).json({ message: `Team with id ${teamId} does not exist` });
         }
 
-        ticket.thread.push(create_system_event_message(`${agent.name} assigned the ticket to ${team.name}`));
+        const systemEventMessage = create_system_event_message(`${agent.name} assigned the ticket to team ${team.name}`);
+        ticket.thread.push(systemEventMessage);
 
         ticket.team = team._id;
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, systemEventMessage);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -149,13 +158,15 @@ const toggle_ticket_priority = async (req, res) => {
 
         let systemEventMessage;
         if (ticket.priority) {
-            systemEventMessage = `${agent.name} marked the ticket as priority`;
+            systemEventMessage = create_system_event_message(`${agent.name} marked the ticket as priority`);
         } else {
-            systemEventMessage = `${agent.name} removed the priority status from the ticket`;
+            systemEventMessage = create_system_event_message(`${agent.name} removed the priority status from the ticket`);
         }
-        ticket.thread.push(create_system_event_message(systemEventMessage));
+        ticket.thread.push(systemEventMessage);
 
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, systemEventMessage);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -177,8 +188,11 @@ const ticket_reply = async (req, res) => {
             return res.status(400).json({ message: `Ticket with id ${ticketId} does not exist` });
         }
 
-        ticket.thread.push(createMessage("AgentMessage", "agentId", agent._id, message));
+        const messageObj = createMessage("AgentMessage", "agentId", agent._id, message);
+        ticket.thread.push(messageObj);
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, messageObj);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -211,10 +225,13 @@ const ticket_note = async (req, res) => {
                     `${agent.name} mentioned ticket ${mentionedTicket._id} in this ticket`
                 );
                 ticket.thread.push(systemEventMessage);
+                emitEvent("ticket_" + ticketId, systemEventMessage);
             }
         }
 
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, messageObj);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -312,10 +329,13 @@ const close_ticket = async (req, res) => {
             return res.status(400).json({ message: `Ticket with id ${ticketId} does not exist` });
         }
 
-        ticket.thread.push(create_system_event_message(`${agent.name} closed the ticket`));
+        const systemEventMessage = create_system_event_message(`${agent.name} closed the ticket`);
+        ticket.thread.push(systemEventMessage);
 
         ticket.open = false;
         await ticket.save();
+
+        emitEvent("ticket_" + ticketId, systemEventMessage);
         res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: error.message });
