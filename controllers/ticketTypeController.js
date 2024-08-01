@@ -62,7 +62,7 @@ const create_ticket_type = async (req, res) => {
         });
 
         await ticketType.save();
-        res.status(200).json();
+        res.status(200).json({ ticketType });
     } catch (error) {
         res.status(500).json({ error });
     }

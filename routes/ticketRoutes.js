@@ -14,8 +14,8 @@ router.post('/note', ticketController.ticket_note);
 router.get('/:id', ticketController.get_ticket);
 router.post('/get/assigned', ticketController.get_assigned_tickets);
 router.post('/get/unassigned', ticketController.get_unassigned_tickets);
-router.post('/get/mentions', ticketController.get_tickets_with_mentions);
+router.post('/get/mention', ticketController.get_tickets_with_mentions);
 router.post('/get/team', ticketController.get_team_tickets);
-router.put('/close', ticketController.close_ticket);
+router.post('/close', ticketController.close_ticket);
 
 module.exports = router;
