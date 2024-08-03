@@ -17,5 +17,6 @@ router.post('/get/unassigned', chatController.get_unassigned_chats);
 router.post('/get/team', chatController.get_team_chats);
 router.post('/markviewd', chatController.mark_chat_viewed);
 router.post('/close', chatController.close_chat);
+router.post('/send/transcript', chatController.send_chat_transcript);
 
 module.exports = router;

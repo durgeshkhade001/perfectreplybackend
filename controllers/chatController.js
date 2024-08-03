@@ -4,6 +4,8 @@ const Team = require("../models/team");
 const Attribute = require("../models/attribute");
 const { emitEvent } = require("../utils/socketManager");
 const { authenticateAgent } = require("../utils/authenticateAgent");
+const { sendEmail } = require("../utils/sendEmail");
+const { generatePlainTextTranscript, generateHTMLTranscript } = require("../utils/emailGenerator");
 
 const createMessage = (type, idKey, id, message) => ({
   [idKey]: id,
@@ -373,6 +375,30 @@ const mark_chat_viewed = async (req, res) => {
   }
 }
 
+const send_chat_transcript = async (req, res) => {
+  const { chatId, email } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).send({ error: "Chat not found" });
+    }
+
+    const subject = "Chat Transcript";
+    const text = generatePlainTextTranscript(chat);
+    const html = generateHTMLTranscript(chat);
+
+    await sendEmail(email, subject, text, html);
+
+    res.status(200).send({ message: "Chat transcript sent successfully" });
+  } catch (error) {
+    console.error("Error sending chat transcript:", error);
+    res.status(500).send({ error: "Failed to send chat transcript" });
+  }
+};
+
+
+
 
 module.exports = {
   create_new_chat,
@@ -388,5 +414,6 @@ module.exports = {
   get_team_chats,
   new_collectdata,
   fill_collectdata,
-  mark_chat_viewed
+  mark_chat_viewed,
+  send_chat_transcript
 };
