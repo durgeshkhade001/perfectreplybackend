@@ -3,7 +3,7 @@ const { authenticateAgent } = require("../utils/authenticateAgent");
 const { getServiceConfig } = require("../utils/commonEmailAuthConfig");
 const { verifyEmail } = require("../utils/emailHandler");
 
-const create = async (req, res) => {
+const createEmailAuth = async (req, res) => {
   const { agentToken, email, password, knownServiceName, service, imaphost, imapport } = req.body;
 
   try {
@@ -34,7 +34,7 @@ const create = async (req, res) => {
   }
 };
 
-const verify = async (req, res) => {
+const verifyEmailAuth = async (req, res) => {
     const { emailAuthId } = req.body;
 
     if (!emailAuthId) {
@@ -58,12 +58,64 @@ const verify = async (req, res) => {
             res.status(400).json({ error: result.error });
         }
     } catch (error) {
-        console.error('Email verification error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(400).send({ error });
+    }
+};
+
+
+const updateEmailAuth = async (req, res) => {
+    const { agentToken, emailAuthId, email, password, knownServiceName, service, imaphost, imapport } = req.body;
+
+    try {
+        const { error, agent } = await authenticateAgent(agentToken);
+        if (error) return res.status(400).send({ error });
+
+        const emailAuth = await EmailAuth.findById(emailAuthId);
+        if (!emailAuth) throw new Error('Email auth not found');
+
+        const oldEmailAuth = { ...emailAuth.toObject() };
+
+        if (email) emailAuth.email = email;
+        if (password) emailAuth.password = password;
+
+        let serviceConfig;
+        if(knownServiceName) {
+            const { error, service, imaphost, imapport } = getServiceConfig(knownServiceName);
+            if (error) return res.status(400).send({ error });
+            
+            serviceConfig = { service, imaphost, imapport };
+        } else {
+            serviceConfig.service = service || emailAuth.service;
+            serviceConfig.imaphost = imaphost || emailAuth.imaphost;
+            serviceConfig.imapport = imapport || emailAuth.imapport;
+        }
+        emailAuth.service = serviceConfig.service;
+        emailAuth.imaphost = serviceConfig.imaphost;
+        emailAuth.imapport = serviceConfig.imapport;
+        emailAuth.status = 'unverified'
+        await emailAuth.save();
+
+        const result = await verifyEmail(emailAuth);
+
+        if (!result.success) {
+            emailAuth.email = oldEmailAuth.email;
+            emailAuth.password = oldEmailAuth.password;
+            emailAuth.service = oldEmailAuth.service;
+            emailAuth.imaphost = oldEmailAuth.imaphost;
+            emailAuth.imapport = oldEmailAuth.imapport;
+            emailAuth.status = oldEmailAuth.status;
+            await emailAuth.save();
+            return res.status(400).json({ error: result.error });
+        } else {
+            res.status(200).json();
+        }
+    } catch (error) {
+        res.status(400).send({ error });
     }
 };
 
 module.exports = {
-  create,
-  verify
+  createEmailAuth,
+  verifyEmailAuth,
+  updateEmailAuth
 };
