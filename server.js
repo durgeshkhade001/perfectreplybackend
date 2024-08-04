@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const http = require("http");
+const socketManager = require("./utils/socketManager");
 const chatRoutes = require("./routes/chatRoutes");
 const agentRoutes = require("./routes/agentRoutes");
 const teamRoutes = require("./routes/teamRoutes");
@@ -13,7 +14,7 @@ const attributeRoutes = require("./routes/attributeRoutes");
 const ticketTypeRoutes = require("./routes/ticketTypeRoutes");
 const EmailAuthRoutes = require("./routes/emailAuthRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
-const socketManager = require("./utils/socketManager");
+const emailChatRoutes = require("./routes/emailChatRoutes");
 
 dotenv.config();
 const app = express();
@@ -48,6 +49,7 @@ app.use("/attribute", attributeRoutes);
 app.use("/tickettype", ticketTypeRoutes);
 app.use("/ticket", ticketRoutes);
 app.use("/emailauth", EmailAuthRoutes);
+app.use("/emailchat", emailChatRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
