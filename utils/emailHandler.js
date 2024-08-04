@@ -85,7 +85,7 @@ async function findEmail(emailAuth, searchCriteria) {
                                 if (mail.text.includes(searchCriteria[2][1])) {
                                     imap.end();
                                     // console.log('Email found');
-                                    return resolve(true);
+                                    return resolve(mail);
                                 }
                             });
                         });
@@ -124,9 +124,9 @@ async function verifyEmail(emailAuth) {
         if (result.error) throw new Error(result.error);
 
         const searchCriteria = ['UNSEEN', ['SINCE', new Date()], ['TEXT', token]];
-        const isEmailFound = await findEmail(emailAuth, searchCriteria);
+        const email = await findEmail(emailAuth, searchCriteria);
 
-        if (isEmailFound) {
+        if (email) {
             emailAuth.status = 'verified';
             await emailAuth.save();
             return { success: true, message: 'Email verified' };
