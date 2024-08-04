@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const emailAuthSchema = new Schema({
-    username: {
+    email: {
         type: String,
         required: true
     },
@@ -10,13 +10,25 @@ const emailAuthSchema = new Schema({
         type: String,
         required: true
     },
-    host: {
+    service: {
         type: String,
         required: true
     },
-    port: {
+    imaphost: {
+        type: String,
+        required: true
+    },
+    imapport: {
         type: Number,
         required: true
+    },
+    access: {
+        type: Array,
+        required: true
+    },
+    status: {
+        type: String,
+        default: 'unverified'
     },
 }, { timestamps: true });
 

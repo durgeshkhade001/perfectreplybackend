@@ -11,6 +11,7 @@ const agentRoutes = require("./routes/agentRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const attributeRoutes = require("./routes/attributeRoutes");
 const ticketTypeRoutes = require("./routes/ticketTypeRoutes");
+const EmailAuthRoutes = require("./routes/emailAuthRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const socketManager = require("./utils/socketManager");
 
@@ -46,6 +47,7 @@ app.use("/team", teamRoutes);
 app.use("/attribute", attributeRoutes);
 app.use("/tickettype", ticketTypeRoutes);
 app.use("/ticket", ticketRoutes);
+app.use("/emailauth", EmailAuthRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
