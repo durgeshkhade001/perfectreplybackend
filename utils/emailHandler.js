@@ -114,6 +114,110 @@ async function findEmail(emailAuth, searchCriteria) {
 
 
 
+function listenToEmailInfinite(emailAuth) {
+
+    lastEmailUID = null;
+
+    const imap = new Imap({
+        user: emailAuth.email,
+        password: emailAuth.password,
+        host: emailAuth.imaphost,
+        port: emailAuth.imapport,
+        tls: true,
+        tlsOptions: { rejectUnauthorized: false }
+    });
+
+    function openInbox(cb) {
+        imap.openBox('INBOX', false, cb);
+    }
+
+    function getTodayDate() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }
+
+    function processMessage(msg) {
+        let email = '';
+        msg.on('body', (stream) => {
+            stream.on('data', (chunk) => {
+                email += chunk.toString('utf8');
+            });
+        });
+
+        msg.once('end', () => {
+            simpleParser(email, (err, parsed) => {
+                if (err) {
+                    console.error('Failed to parse email:', err);
+                    return;
+                }
+                console.log('New email received:');
+                console.log('From:', parsed.from.text);
+                console.log('Subject:', parsed.subject);
+                console.log('Text:', parsed.text);
+            });
+        });
+    }
+
+    function checkNewEmails() {
+        const today = getTodayDate();
+        
+        const searchCriteria = lastEmailUID
+            ? [['UID', `${lastEmailUID + 1}:*`]]
+            : ['UNSEEN', ['SINCE', today]];
+
+        imap.search(searchCriteria, (err, results) => {
+            if (err) {
+                console.error('Search error:', err);
+                return;
+            }
+            if (results.length > 0) {
+                const newEmailUIDs = lastEmailUID
+                    ? results.filter(uid => uid > lastEmailUID)
+                    : results;
+
+                if (newEmailUIDs.length > 0) {
+                    lastEmailUID = Math.max(...newEmailUIDs);
+                    const fetch = imap.fetch(newEmailUIDs, { bodies: '' });
+                    fetch.on('message', processMessage);
+                    fetch.once('error', (err) => {
+                        console.error('Fetch error:', err);
+                    });
+                    fetch.once('end', () => {
+                        // console.log('Finished fetching new messages');
+                    });
+                } else {
+                    // console.log('No new emails');
+                }
+            } else {
+                // console.log('No new emails');
+            }
+        });
+    }
+
+    imap.once('ready', () => {
+        openInbox((err) => {
+            if (err) {
+                console.error('Failed to open inbox:', err);
+                return;
+            }
+            // console.log('Connected to inbox, listening for new emails...');
+            checkNewEmails();
+            setInterval(checkNewEmails, 9000); // Check every 5 seconds
+        });
+    });
+
+    imap.once('error', (err) => {
+        console.error('IMAP error:', err);
+    });
+
+    imap.once('end', () => {
+        // console.log('Connection ended');
+    });
+
+    imap.connect();
+}
+
+
 async function verifyEmail(emailAuth) {
     try {
         const token = crypto.randomBytes(5).toString('hex');
@@ -127,6 +231,7 @@ async function verifyEmail(emailAuth) {
         const email = await findEmail(emailAuth, searchCriteria);
 
         if (email) {
+            listenToEmailInfinite(emailAuth);
             emailAuth.status = 'verified';
             await emailAuth.save();
             return { success: true, message: 'Email verified' };
@@ -140,4 +245,4 @@ async function verifyEmail(emailAuth) {
 
 
 
-module.exports = { sendEmail, findEmail, verifyEmail };
+module.exports = { sendEmail, findEmail, verifyEmail, listenToEmailInfinite };
