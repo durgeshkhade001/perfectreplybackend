@@ -31,6 +31,10 @@ const emailAuthSchema = new Schema({
         type: String,
         default: 'unverified'
     },
+    isListining: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 const EmailAuth = mongoose.model('EmailAuth', emailAuthSchema);

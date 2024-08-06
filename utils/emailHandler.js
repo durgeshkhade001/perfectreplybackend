@@ -1,6 +1,3 @@
-
-
-
 const nodemailer = require('nodemailer');
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
@@ -37,6 +34,18 @@ async function sendEmail(emailAuth, toEmail, subject, text) {
         return { error: error.message };
     }
 }
+
+
+async function switchEmailIsListening(emailAuth, status) {
+    try {
+        emailAuth.isListening = status;
+        await emailAuth.save();
+        return { success: true, message: 'Email isListening status updated' };
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
 
 
 
@@ -194,10 +203,18 @@ function listenToEmailInfinite(emailAuth) {
         });
     }
 
-    imap.once('ready', () => {
-        openInbox((err) => {
+    imap.once('ready', async () => {
+        
+        try { await switchEmailIsListening(emailAuth, true);
+        } catch (error) { console.error('Failed to update emailAuth isListening:', error.message); }
+
+        openInbox(async (err) => {
             if (err) {
                 console.error('Failed to open inbox:', err);
+
+                try { await switchEmailIsListening(emailAuth, false);
+                } catch (error) { console.error('Failed to update emailAuth isListening:', error.message); }
+
                 return;
             }
             // console.log('Connected to inbox, listening for new emails...');
@@ -206,11 +223,19 @@ function listenToEmailInfinite(emailAuth) {
         });
     });
 
-    imap.once('error', (err) => {
+    imap.once('error', async (err) => {
+
+        try { await switchEmailIsListening(emailAuth, false);
+        } catch (error) { console.error('Failed to update emailAuth isListening:', error.message); }
+
         console.error('IMAP error:', err);
     });
 
-    imap.once('end', () => {
+    imap.once('end',  async () => {
+
+        try { await switchEmailIsListening(emailAuth, false);
+        } catch (error) { console.error('Failed to update emailAuth isListening:', error.message); }
+        
         // console.log('Connection ended');
     });
 
