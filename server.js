@@ -15,6 +15,8 @@ const ticketTypeRoutes = require("./routes/ticketTypeRoutes");
 const EmailAuthRoutes = require("./routes/emailAuthRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const emailChatRoutes = require("./routes/emailChatRoutes");
+const EmailAuth = require("./models/emailAuth");
+const { listenToEmailInfinite } = require("./utils/emailHandler");
 
 dotenv.config();
 const app = express();
@@ -54,3 +56,24 @@ app.use("/emailchat", emailChatRoutes);
 app.use((req, res) => {
   res.status(404).send("Route not found");
 });
+
+
+
+
+
+
+
+// rest server initialization
+
+async function startEmailListening() {
+  try {
+    const emailAuths = await EmailAuth.find({ status: "verified" });
+    for (const emailAuth of emailAuths) {
+      listenToEmailInfinite(emailAuth);
+    }
+  } catch (error) {
+    console.error("Error starting email listening:", error.message);
+  }
+}
+
+startEmailListening();

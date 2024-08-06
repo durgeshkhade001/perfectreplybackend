@@ -114,8 +114,29 @@ const updateEmailAuth = async (req, res) => {
     }
 };
 
+const isListening = async (req, res) => {
+    const { emailAuthId } = req.body;
+
+    try {
+        const emailAuth = await EmailAuth.findById(emailAuthId);
+        if (!emailAuth) return res.status(400).json({ error: 'EmailAuth not found' });
+
+        if(emailAuth.isListening) {
+            return res.json({ isListening: true });
+        } else {
+            return res.json({ isListening: false });
+        }
+
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+
 module.exports = {
   createEmailAuth,
   verifyEmailAuth,
-  updateEmailAuth
+  updateEmailAuth,
+  isListening,
 };
