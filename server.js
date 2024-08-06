@@ -1,4 +1,4 @@
-console.clear();
+console.log('\x1Bc');
 
 const express = require("express");
 const bodyParser = require("body-parser");

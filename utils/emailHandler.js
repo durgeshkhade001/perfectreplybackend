@@ -219,7 +219,8 @@ function listenToEmailInfinite(emailAuth) {
             }
             // console.log('Connected to inbox, listening for new emails...');
             checkNewEmails();
-            setInterval(checkNewEmails, 9000); // Check every 5 seconds
+            setInterval(checkNewEmails, 9000);
+
         });
     });
 
@@ -236,7 +237,7 @@ function listenToEmailInfinite(emailAuth) {
         try { await switchEmailIsListening(emailAuth, false);
         } catch (error) { console.error('Failed to update emailAuth isListening:', error.message); }
         
-        // console.log('Connection ended');
+        console.log('Connection ended');
     });
 
     imap.connect();

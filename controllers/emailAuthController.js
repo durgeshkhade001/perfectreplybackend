@@ -43,7 +43,7 @@ const verifyEmailAuth = async (req, res) => {
 
     try {
         const emailAuth = await EmailAuth.findById(emailAuthId);
-        if (!emailAuth) throw new Error('Email auth not found');
+        if (!emailAuth) return res.status(400).json({ error: 'EmailAuth not found' });
 
         if (emailAuth.status === 'verified') {
             emailAuth.status = 'unverified';
@@ -71,7 +71,7 @@ const updateEmailAuth = async (req, res) => {
         if (error) return res.status(400).send({ error });
 
         const emailAuth = await EmailAuth.findById(emailAuthId);
-        if (!emailAuth) throw new Error('Email auth not found');
+        if (!emailAuth) return res.status(400).json({ error: 'EmailAuth not found' });
 
         const oldEmailAuth = { ...emailAuth.toObject() };
 

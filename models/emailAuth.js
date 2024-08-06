@@ -31,7 +31,7 @@ const emailAuthSchema = new Schema({
         type: String,
         default: 'unverified'
     },
-    isListining: {
+    isListening: {
         type: Boolean,
         default: false
     }
