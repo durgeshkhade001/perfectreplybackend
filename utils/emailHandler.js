@@ -2,7 +2,9 @@ const nodemailer = require('nodemailer');
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
 const EmailAuth = require('../models/emailAuth');
+const EmailChat = require('../models/emailChat');
 const crypto = require('crypto');
+const { title } = require('process');
 
 async function sendEmail(emailAuth, toEmail, subject, text) {
     try {
@@ -154,15 +156,24 @@ function listenToEmailInfinite(emailAuth) {
         });
 
         msg.once('end', () => {
-            simpleParser(email, (err, parsed) => {
+            simpleParser(email, async (err, parsed) => {
                 if (err) {
                     console.error('Failed to parse email:', err);
                     return;
                 }
-                console.log('New email received:');
-                console.log('From:', parsed.from.text);
-                console.log('Subject:', parsed.subject);
-                console.log('Text:', parsed.text);
+                // console.log("=".repeat(30) + lastEmailUID);
+                // console.log('New email received:');
+                // console.log('From:', parsed.from.text);
+                // console.log('Subject:', parsed.subject);
+                // console.log('Text:', parsed.text);
+                // console.log('='.repeat(30) + '\n\n');
+
+                const emailContent = { title: parsed.subject, text: parsed.text };
+                const emailChat = await EmailChat.findOne({ emailContent });
+                if (!emailChat) {
+                    const newEmailChat = new EmailChat({ emailContent, messageId: parsed.messageId, customerEmail: parsed.from.text });
+                    await newEmailChat.save();
+                }
             });
         });
     }

@@ -6,6 +6,10 @@ const emailChatSchema = new Schema({
         type: String,
         required: true
     },
+    messageId: {
+        type: String,
+        required: true
+    },
     priority: {
         type: Boolean,
         default: false
@@ -27,6 +31,10 @@ const emailChatSchema = new Schema({
     mentions: {
         type: Array,
         default: []
+    },
+    emailContent: {
+        type: Object,
+        required: true
     },
     thread: {
         type: Array,
