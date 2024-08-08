@@ -47,7 +47,23 @@ const convertEmailToJson = (email) => {
 
 
 
-async function sendEmail(emailAuth, toEmail, subject, text) {
+async function sendEmail(emailAuth, toEmail, subject, text, replyToEmailChatId) {
+    let lastEmail = null;
+    let emailChat = null;
+    if(replyToEmailChatId) {
+        emailChat = await EmailChat.findById(replyToEmailChatId);
+        if(!emailChat) return { error: 'Email chat not found' };
+
+        toEmail = emailChat.customerEmail;
+        toEmail = toEmail.match(/<(.+)>/)[1];
+
+        for(let i = emailChat.thread.length - 1; i >= 0; i--) {
+            if(emailChat.thread[i].type === 'ContactReply') {
+                lastEmail = emailChat.thread[i];
+                break;
+            }
+        }
+    }
     try {
         const transporter = nodemailer.createTransport({
             service: emailAuth.service,
@@ -61,13 +77,34 @@ async function sendEmail(emailAuth, toEmail, subject, text) {
             from: emailAuth.email,
             to: toEmail,
             subject,
-            text
+            text,
         };
+
+        if(replyToEmailChatId && lastEmail) {
+            mailOptions.headers = {
+                'In-Reply-To': lastEmail.messageId,
+                'References': lastEmail.messageId
+            };
+            mailOptions.subject = `Re: ${emailChat.title}`;
+        }
 
         return new Promise((resolve, reject) => {
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     return reject(new Error('Failed to send email: ' + error.message));
+                }
+                if(replyToEmailChatId && lastEmail) {
+                    const sentMail = {
+                        messageId: info.messageId,
+                        datetime: new Date(),
+                        message: text,
+                        from: emailAuth.email,
+                        type: 'AgentReply',
+                        inReplyTo: lastEmail.messageId
+                    };
+                    emailChat.thread.push(sentMail);
+                    emailChat.markModified('thread');
+                    emailChat.save();
                 }
                 resolve({ success: true, info });
             });
@@ -222,9 +259,12 @@ function listenToEmailInfinite(emailAuth) {
                     });
                     await newEmailChat.save();
                 } else {
-                    emailChat.thread.push(emailChatNewMessage);
-                    emailChat.markModified('thread');
-                    await emailChat.save();
+                    const messageExists = emailChat.thread.some(message => message.messageId === emailChatNewMessage.messageId);
+                    if (!messageExists) {
+                        emailChat.thread.push(emailChatNewMessage);
+                        emailChat.markModified('thread');
+                        await emailChat.save();
+                    }
                 }
             });
         });
