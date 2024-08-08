@@ -6,6 +6,47 @@ const EmailChat = require('../models/emailChat');
 const crypto = require('crypto');
 const { title } = require('process');
 
+
+
+const convertEmailToJson = (email) => {
+
+    const messageId = email.messageId;
+    const inReplyTo = email.inReplyTo;
+    const emailFrom = email.from.text;
+    const emailText = email.text;
+    const datetime = email.date;
+
+    const regex1 = /^On [a-zA-Z]{3}, \d{1,2} [a-zA-Z]{3} \d{4} at \d{1,2}:\d{2}/;
+    const lines = emailText.split("\n");
+
+    actualMessage = "";
+    prevMessageThread = "";
+
+    for (let i = 0; i < lines.length; i++) {
+        if (regex1.test(lines[i])) {
+            prevMessageThread = lines.slice(i).join("\n");
+            break;
+        }
+        actualMessage += lines[i] + "\n";
+    }
+
+    actualMessage = actualMessage.trim();
+    prevMessageThread = prevMessageThread.trim();
+
+    return { 
+        message: actualMessage, 
+        datetime, 
+        previousMessageThread: prevMessageThread, 
+        from: emailFrom,
+        messageId,
+        inReplyTo,
+        type: 'ContactReply'
+    };
+};
+
+
+
+
 async function sendEmail(emailAuth, toEmail, subject, text) {
     try {
         const transporter = nodemailer.createTransport({
@@ -167,12 +208,23 @@ function listenToEmailInfinite(emailAuth) {
                 // console.log('Subject:', parsed.subject);
                 // console.log('Text:', parsed.text);
                 // console.log('='.repeat(30) + '\n\n');
+                // console.log(parsed);
 
-                const emailContent = { title: parsed.subject, text: parsed.text };
-                const emailChat = await EmailChat.findOne({ emailContent });
+                const emailChatNewMessage = convertEmailToJson(parsed);
+                const title = parsed.subject.split('Re: ')[1] || parsed.subject;
+                const emailChat = await EmailChat.findOne({ customerEmail: parsed.from.text, title });
                 if (!emailChat) {
-                    const newEmailChat = new EmailChat({ emailContent, messageId: parsed.messageId, customerEmail: parsed.from.text });
+                    const newEmailChat = new EmailChat({
+                        customerEmail: parsed.from.text,
+                        messageId: parsed.messageId,
+                        title,
+                        thread: [emailChatNewMessage]
+                    });
                     await newEmailChat.save();
+                } else {
+                    emailChat.thread.push(emailChatNewMessage);
+                    emailChat.markModified('thread');
+                    await emailChat.save();
                 }
             });
         });

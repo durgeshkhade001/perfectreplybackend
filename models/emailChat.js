@@ -32,8 +32,8 @@ const emailChatSchema = new Schema({
         type: Array,
         default: []
     },
-    emailContent: {
-        type: Object,
+    title: {
+        type: String,
         required: true
     },
     thread: {
