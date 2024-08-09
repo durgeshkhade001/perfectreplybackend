@@ -12,9 +12,11 @@ const agentRoutes = require("./routes/agentRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const attributeRoutes = require("./routes/attributeRoutes");
 const ticketTypeRoutes = require("./routes/ticketTypeRoutes");
-const EmailAuthRoutes = require("./routes/emailAuthRoutes");
+const emailAuthRoutes = require("./routes/emailAuthRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const emailChatRoutes = require("./routes/emailChatRoutes");
+const articleRoutes = require("./routes/articleRoutes");
+const helpCenterRoutes = require("./routes/helpCenterRoutes");
 const EmailAuth = require("./models/emailAuth");
 const { listenToEmailInfinite } = require("./utils/emailHandler");
 
@@ -50,8 +52,10 @@ app.use("/team", teamRoutes);
 app.use("/attribute", attributeRoutes);
 app.use("/tickettype", ticketTypeRoutes);
 app.use("/ticket", ticketRoutes);
-app.use("/emailauth", EmailAuthRoutes);
+app.use("/emailauth", emailAuthRoutes);
 app.use("/emailchat", emailChatRoutes);
+app.use("/article", articleRoutes);
+app.use("/helpcenter", helpCenterRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
