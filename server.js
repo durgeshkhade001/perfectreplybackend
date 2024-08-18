@@ -19,6 +19,7 @@ const articleRoutes = require("./routes/articleRoutes");
 const helpCenterRoutes = require("./routes/helpCenterRoutes");
 const waChatRoutes = require("./routes/waChatRoutes");
 const WaLinkRoutes = require("./routes/waLinkRoutes");
+const WaNumberRoutes = require("./routes/waNumberRoutes");
 const EmailAuth = require("./models/emailAuth");
 const { listenToEmailInfinite } = require("./utils/emailHandler");
 
@@ -60,6 +61,7 @@ app.use("/article", articleRoutes);
 app.use("/helpcenter", helpCenterRoutes);
 app.post("/wachat", waChatRoutes);
 app.use("/walink", WaLinkRoutes);
+app.use("/wanumber", WaNumberRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
