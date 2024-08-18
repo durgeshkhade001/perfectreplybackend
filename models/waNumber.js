@@ -6,6 +6,10 @@ const waNumberSchema = new Schema({
         type: String,
         required: true,
     },
+    numberId: {
+        type: String,
+        required: true,
+    },
     waLinkId: {
         type: Schema.Types.ObjectId,
         ref: 'WaLink',

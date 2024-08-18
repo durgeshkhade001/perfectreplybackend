@@ -59,7 +59,7 @@ app.use("/emailauth", emailAuthRoutes);
 app.use("/emailchat", emailChatRoutes);
 app.use("/article", articleRoutes);
 app.use("/helpcenter", helpCenterRoutes);
-app.post("/wachat", waChatRoutes);
+app.use("/wachat", waChatRoutes);
 app.use("/walink", WaLinkRoutes);
 app.use("/wanumber", WaNumberRoutes);
 

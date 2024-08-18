@@ -104,6 +104,7 @@ const fetch_existing_nos = async (req, res) => {
                 const newWaNumber = new WaNumber({
                     number: existingNo.display_phone_number,
                     waLinkId: waLinkId,
+                    numberId: existingNo.id,
                 });
 
                 await newWaNumber.save();
