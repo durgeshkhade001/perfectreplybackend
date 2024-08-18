@@ -17,6 +17,8 @@ const ticketRoutes = require("./routes/ticketRoutes");
 const emailChatRoutes = require("./routes/emailChatRoutes");
 const articleRoutes = require("./routes/articleRoutes");
 const helpCenterRoutes = require("./routes/helpCenterRoutes");
+const waChatRoutes = require("./routes/waChatRoutes");
+const WaLinkRoutes = require("./routes/waLinkRoutes");
 const EmailAuth = require("./models/emailAuth");
 const { listenToEmailInfinite } = require("./utils/emailHandler");
 
@@ -56,6 +58,8 @@ app.use("/emailauth", emailAuthRoutes);
 app.use("/emailchat", emailChatRoutes);
 app.use("/article", articleRoutes);
 app.use("/helpcenter", helpCenterRoutes);
+app.post("/wachat", waChatRoutes);
+app.use("/walink", WaLinkRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
